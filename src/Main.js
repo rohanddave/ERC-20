@@ -31,10 +31,6 @@ export class Main extends Component {
         this.state.TokenSaleContract.methods.buyTokens(this.state.requiredTokens).send({from:this.state.AccountDetails.address,value: this.state.requiredTokens*this.state.TokenDetails.price});
     }
 
-    getDetails(){
-        
-    }
-
     async componentDidMount() {
         let provider = window.ethereum;
         let selectedAccount;
