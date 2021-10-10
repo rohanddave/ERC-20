@@ -18,9 +18,9 @@ export class Main extends Component {
                 symbol: '',
                 price: 0,
                 sold: 0,
-                forSale: 0
+                forSale: 0 //actually is remaining tokens 
             },
-            requiredTokens: 0
+            requiredTokens: ''
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -28,7 +28,9 @@ export class Main extends Component {
     handleSubmit(event) {
         event.preventDefault();
         console.log(this.state.requiredTokens);
-        this.state.TokenSaleContract.methods.buyTokens(this.state.requiredTokens).send({from:this.state.AccountDetails.address,value: this.state.requiredTokens*this.state.TokenDetails.price});
+        this.state.TokenSaleContract.methods.buyTokens(this.state.requiredTokens).send({ from: this.state.AccountDetails.address, value: this.state.requiredTokens * this.state.TokenDetails.price }).then(() => {
+            window.location.reload();
+        });
     }
 
     async componentDidMount() {
@@ -87,26 +89,30 @@ export class Main extends Component {
         const priceInETH = 0.000000001 * price;
         const { address, balance } = this.state.AccountDetails;
         const requiredTokens = this.state.requiredTokens;
+        const prog = parseInt((parseInt(sold) / (parseInt(forSale) + parseInt(sold))) * 100);
+        console.log(prog);
         return (
             <div className="App">
                 <div className="d-flex justify-content-center align-items-center flex-column p-4 m-2">
-                    <h1 className="p-2">{name} ICO SALE</h1>
-                    <p>Introducing {name} ({symbol})! Token Price is {priceInETH} eth. You currently have {balance} Token(s)</p>
+                    <div className="container d-flex justify-content-center align-items-center flex-column">
+                        <h1 className="p-2">{name} Initial Coin Offering Sale</h1>
+                        <div className="container border-bottom primary mb-3"></div>
+                        <p>Introducing <b>{name}<i> ({symbol})</i></b>! Token Price is <b>{priceInETH} eth</b>. You currently have <b>{balance} Token(s)</b></p>
+                    </div>
                     <div className="container">
                         <form onSubmit={this.handleSubmit}>
                             <div className="input-group mb-3 w-100">
                                 <input type="number" className="form-control" placeholder={`Number Of ${name}`} aria-label="Recipient's username" aria-describedby="button-addon2" value={this.state.requiredTokens} onChange={(e) => this.setState({ requiredTokens: e.target.value })}></input>
-                                <button className="btn btn-outline-secondary" type="submit" id="button-addon2">Buy Tokens</button>
+                                <button className="btn btn-outline-primary" type="submit" id="button-addon2">Buy Tokens</button>
                             </div>
                             <div className="progress">
-                                <div className={`progress-bar w-${(sold / forSale) * 100}`} role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow={`${prog}`} aria-valuemin="0" aria-valuemax="100" style={{ width: `${prog}%` }}></div>
                             </div>
                             <div className="d-flex justify-content-center align-items-center flex-column">
-                                <p>{sold}/{forSale + sold} tokens sold</p>
-                                <p>Your account: {address}</p>
-                                <p>Your Cost in ETH: {requiredTokens !== 0 ? priceInETH * requiredTokens : ''}</p>
-                                <p>Your Cost in GWEI: {requiredTokens !== 0 ? price * requiredTokens : ''}</p>
-
+                                <h5>{sold}/{parseInt(forSale) + parseInt(sold)} tokens sold</h5>
+                                <div className="container border-bottom primary mb-3"></div>
+                                <p><i>Your account:</i> <b>{address}</b></p>
+                                <p><i>Your Cost:</i><b><i>{requiredTokens !== 0 ? priceInETH * requiredTokens : ''}</i> eth</b> / <b><i>{requiredTokens !== 0 ? priceInETH * requiredTokens : ''}</i> gwei</b></p>
                             </div>
                         </form>
                     </div>

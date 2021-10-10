@@ -113,7 +113,7 @@
   "sourceMap": "23:1439:2:-;;;218:171;8:9:-1;5:2;;;30:1;27;20:12;5:2;218:171:2;;;;;;;;;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;218:171:2;;;;;;;;;;;;;;;;;;;;;;;;;297:10;289:5;;:18;;;;;;;;;;;;;;;;;;333:14;317:13;;:30;;;;;;;;;;;;;;;;;;371:11;358:10;:24;;;;218:171;;23:1439;;;;;;",
   "deployedSourceMap": "23:1439:2:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;533:538;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;533:538:2;;;;;;;;;;;;;;;;;:::i;:::-;;1078:382;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1078:382:2;;;:::i;:::-;;130:25;;8:9:-1;5:2;;;30:1;27;20:12;5:2;130:25:2;;;:::i;:::-;;;;;;;;;;;;;;;;;;;66:26;;8:9:-1;5:2;;;30:1;27;20:12;5:2;66:26:2;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;99:25;;8:9:-1;5:2;;;30:1;27;20:12;5:2;99:25:2;;;:::i;:::-;;;;;;;;;;;;;;;;;;;533:538;622:36;631:15;647:10;;622:8;:36::i;:::-;609:9;:49;601:58;;;;;;786:15;744:13;;;;;;;;;;;:23;;;776:4;744:38;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;744:38:2;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;744:38:2;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;744:38:2;;;;;;;;;;;;;;;;:57;;736:66;;;;;;891:15;877:10;;:29;;;;;;;;;;;923:32;928:10;939:15;923:32;;;;;;;;;;;;;;;;;;;;;;;;;;;;974:13;;;;;;;;;;;:22;;;997:10;1008:15;974:50;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;974:50:2;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;974:50:2;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;974:50:2;;;;;;;;;;;;;;;;966:59;;;;;;533:538;:::o;1078:382::-;1135:5;;;;;;;;;;;1121:19;;:10;:19;;;1113:28;;;;;;1201:13;;;;;;;;;;;:22;;;1224:5;;;;;;;;;;;1230:13;;;;;;;;;;;:23;;;1262:4;1230:38;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1230:38:2;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1230:38:2;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;1230:38:2;;;;;;;;;;;;;;;;1201:68;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1201:68:2;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1201:68:2;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;1201:68:2;;;;;;;;;;;;;;;;1193:77;;;;;;1078:382::o;130:25::-;;;;:::o;66:26::-;;;;;;;;;;;;;:::o;99:25::-;;;;:::o;395:128::-;458:9;492:1;487;:6;:27;;;;513:1;508;505;503;:3;499:7;;;498:11;;;;;;:16;487:27;478:38;;;;;;395:128;;;;:::o",
   "source": "import './Token.sol';\n\ncontract TokenSale{\n    address admin;\n    Token public tokenContract; \n    uint256 public tokenPrice;\n    uint256 public tokensSold; \n\n    event Sell(address _buyer, uint256 _amount);\n     \n    constructor(Token _tokenContract, uint256 _tokenPrice) public{\n        admin = msg.sender;\n        tokenContract = _tokenContract; \n        tokenPrice = _tokenPrice;\n    }\n\n    function multiply(uint256 x, uint256 y) internal pure returns (uint256 z){\n        require( y == 0 ||  (z = x*y)/y == x );\n    }\n    \n    function buyTokens(uint256 _numberOfTokens) public payable{\n        require(msg.value == multiply(_numberOfTokens,tokenPrice)); //eth sent with call to contract shoud be equal to cost of tokens \n        require(tokenContract.balanceOf(address(this)) >= _numberOfTokens); // tokenContract must have sufficient number of tokens \n        \n        tokensSold += _numberOfTokens; \n\n        emit Sell(msg.sender,_numberOfTokens);\n\n        require(tokenContract.transfer(msg.sender,_numberOfTokens)); //send over number of tokens requested\n    } \n\n    function endSale() public{\n        require(msg.sender == admin); // only admin should be able to end sale \n        require(tokenContract.transfer(admin,tokenContract.balanceOf(address(this)))); //transfer remaining tokens to admin \n        //selfdestruct(payable(admin)); //self destruct implements above two lines in addition to returning gas fees and disabling the contract \n    }\n}",
-  "sourcePath": "/Users/rohanddave/Documents/Projects/Blockchain/CCT Token /Token and Token Sale Website/truffle/contracts/TokenSale.sol",
+  "sourcePath": "/Users/rohanddave/Documents/Projects/Blockchain/CCToken/truffle/contracts/TokenSale.sol",
   "ast": {
     "absolutePath": "project:/contracts/TokenSale.sol",
     "exportedSymbols": {
@@ -4013,12 +4013,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x6f884987898dda2D8351327a5d59fcBa32aad560",
-      "transactionHash": "0xe18b04a6529a321ab1d6ac2d65df8e55f7cf695ef5b376a3ca0d77c37a0c90d1"
+      "address": "0x234e6c38362dD87FADeaC07277B6ca759E5d0E8e",
+      "transactionHash": "0x5292ac931a4b39bd183a58b71f6f431f7b6accbb9cc9e84c394f6c81e869df49"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-10-10T08:50:22.539Z",
+  "updatedAt": "2021-10-10T14:39:12.624Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
