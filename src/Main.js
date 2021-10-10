@@ -19,9 +19,17 @@ export class Main extends Component {
                 price: 0,
                 sold: 0,
                 forSale: 0
-            }
+            },
+            requiredTokens: 0
         }
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        console.log(this.state.requiredTokens);
+    }
+
     async componentDidMount() {
         let provider = window.ethereum;
         let selectedAccount;
@@ -72,6 +80,7 @@ export class Main extends Component {
                 });
         }
     }
+
     render() {
         const { name, symbol, price, sold, forSale } = this.state.TokenDetails;
         const priceInETH = 0.000000001 * price;
@@ -82,10 +91,10 @@ export class Main extends Component {
                     <h1 className="p-2">{name} ICO SALE</h1>
                     <p>Introducing {name} ({symbol})! Token Price is {priceInETH} eth. You currently have {balance} Token(s)</p>
                     <div className="container">
-                        <form>
+                        <form onSubmit={this.handleSubmit}>
                             <div className="input-group mb-3 w-100">
-                                <input type="number" className="form-control" placeholder="Number Of CC Tokens" aria-label="Recipient's username" aria-describedby="button-addon2"></input>
-                                <button className="btn btn-outline-secondary" type="button" id="button-addon2">Buy Tokens</button>
+                                <input type="number" className="form-control" placeholder={`Number Of ${name}`} aria-label="Recipient's username" aria-describedby="button-addon2" value={this.state.requiredTokens} onChange={(e) => this.setState({ requiredTokens: e.target.value })}></input>
+                                <button className="btn btn-outline-secondary" type="submit" id="button-addon2">Buy Tokens</button>
                             </div>
                             <div className="progress">
                                 <div className={`progress-bar w-${(sold / forSale) * 100}`} role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
