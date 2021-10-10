@@ -9,7 +9,17 @@ export class Main extends Component {
         this.state = {
             TokenSaleContract: {},
             TokenContract: {},
-            Account: ''
+            AccountDetails: {
+                address: '',
+                balance: 0
+            },
+            TokenDetails:{
+                name: '',
+                symbol: '',
+                price: 0,
+                sold: 0,
+                forSale: 0
+            }
         }
     }
     async componentDidMount() {
@@ -23,10 +33,15 @@ export class Main extends Component {
                 .catch((error) => {
                     console.log(error);
                 })
-            provider.on('accountsChanged', function (accounts) {
-                selectedAccount = accounts[0];
-            })
-        }
+            provider.on('accountsChanged', async function (accounts) {
+                this.setState(
+                    {
+                        AccountDetails: {
+                            address: accounts[0],
+                            balance: await tokencontract.methods.balanceOf(accounts[0]).call()
+                        }
+                    });
+                }.bind(this));
 
         const web3 = new Web3(provider);
 
@@ -39,16 +54,33 @@ export class Main extends Component {
             TokenContractBuild.abi,
             TokenContractBuild.networks[networkId].address
         );
-        this.setState({Account: selectedAccount,TokenSaleContract: tokensalecontract, TokenContract: tokencontract});
-        const tokenPrice = await this.state.TokenSaleContract.methods.tokenPrice.call();
-        console.log(tokenPrice);
+        this.setState(
+            {
+                AccountDetails:{
+                    address: selectedAccount,
+                    balance: await tokencontract.methods.balanceOf(selectedAccount).call()
+                },
+                TokenSaleContract: tokensalecontract,
+                TokenContract: tokencontract,
+                TokenDetails: {
+                    name: await tokencontract.methods.name().call(),
+                    symbol: await tokencontract.methods.symbol().call(),
+                    price: await tokensalecontract.methods.tokenPrice().call(),
+                    sold: await tokensalecontract.methods.tokensSold().call(),
+                    forSale: await tokencontract.methods.balanceOf(tokensalecontract._address).call()
+                }
+            });
     }
+}
     render() {
+        const {name,symbol,price,sold,forSale} = this.state.TokenDetails;
+        const priceInETH = 0.000000001 * price;
+        const {address,balance} = this.state.AccountDetails;
         return (
             <div className="App">
                 <div className="d-flex justify-content-center align-items-center flex-column p-4 m-2">
-                    <h1 className="p-2">CC TOKEN ICO SALE</h1>
-                    <p>Introducing $TOKEN_NAME! Token Price is $TOKEN_PRICE eth. You currently have $BALANCE_OF_ACCOUNT Token(s)</p>
+                    <h1 className="p-2">{name} ICO SALE</h1>
+                    <p>Introducing {name} ({symbol})! Token Price is {priceInETH} eth. You currently have {balance} Token(s)</p>
                     <div className="container">
                         <form>
                             <div className="input-group mb-3 w-100">
@@ -56,11 +88,11 @@ export class Main extends Component {
                                 <button className="btn btn-outline-secondary" type="button" id="button-addon2">Buy Tokens</button>
                             </div>
                             <div className="progress">
-                                <div className="progress-bar w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div className={`progress-bar w-${(sold/forSale)*100}`} role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div className="d-flex justify-content-center align-items-center flex-column">
-                                <p>$NUMBER_OF_TOKENS_SOLD/$TOTAL_TOKENS_FOR_SALE tokens</p>
-                                <p>Your account: {this.state.Account}</p>
+                                <p>{sold}/{forSale} tokens sold</p>
+                                <p>Your account: {address}</p>
                             </div>
                         </form>
                     </div>
