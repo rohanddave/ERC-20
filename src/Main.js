@@ -28,6 +28,11 @@ export class Main extends Component {
     handleSubmit(event) {
         event.preventDefault();
         console.log(this.state.requiredTokens);
+        this.state.TokenSaleContract.methods.buyTokens(this.state.requiredTokens).send({from:this.state.AccountDetails.address,value: this.state.requiredTokens*this.state.TokenDetails.price});
+    }
+
+    getDetails(){
+        
     }
 
     async componentDidMount() {
@@ -85,6 +90,7 @@ export class Main extends Component {
         const { name, symbol, price, sold, forSale } = this.state.TokenDetails;
         const priceInETH = 0.000000001 * price;
         const { address, balance } = this.state.AccountDetails;
+        const requiredTokens = this.state.requiredTokens;
         return (
             <div className="App">
                 <div className="d-flex justify-content-center align-items-center flex-column p-4 m-2">
@@ -100,8 +106,11 @@ export class Main extends Component {
                                 <div className={`progress-bar w-${(sold / forSale) * 100}`} role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div className="d-flex justify-content-center align-items-center flex-column">
-                                <p>{sold}/{forSale} tokens sold</p>
+                                <p>{sold}/{forSale + sold} tokens sold</p>
                                 <p>Your account: {address}</p>
+                                <p>Your Cost in ETH: {requiredTokens !== 0 ? priceInETH * requiredTokens : ''}</p>
+                                <p>Your Cost in GWEI: {requiredTokens !== 0 ? price * requiredTokens : ''}</p>
+
                             </div>
                         </form>
                     </div>
