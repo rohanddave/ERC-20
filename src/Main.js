@@ -13,7 +13,7 @@ export class Main extends Component {
                 address: '',
                 balance: 0
             },
-            TokenDetails:{
+            TokenDetails: {
                 name: '',
                 symbol: '',
                 price: 0,
@@ -41,41 +41,41 @@ export class Main extends Component {
                             balance: await tokencontract.methods.balanceOf(accounts[0]).call()
                         }
                     });
-                }.bind(this));
+            }.bind(this));
 
-        const web3 = new Web3(provider);
+            const web3 = new Web3(provider);
 
-        const networkId = await web3.eth.net.getId();
-        const tokensalecontract = await new web3.eth.Contract(
-            TokenSaleContractBuild.abi,
-            TokenSaleContractBuild.networks[networkId].address
-        );
-        const tokencontract = await new web3.eth.Contract(
-            TokenContractBuild.abi,
-            TokenContractBuild.networks[networkId].address
-        );
-        this.setState(
-            {
-                AccountDetails:{
-                    address: selectedAccount,
-                    balance: await tokencontract.methods.balanceOf(selectedAccount).call()
-                },
-                TokenSaleContract: tokensalecontract,
-                TokenContract: tokencontract,
-                TokenDetails: {
-                    name: await tokencontract.methods.name().call(),
-                    symbol: await tokencontract.methods.symbol().call(),
-                    price: await tokensalecontract.methods.tokenPrice().call(),
-                    sold: await tokensalecontract.methods.tokensSold().call(),
-                    forSale: await tokencontract.methods.balanceOf(tokensalecontract._address).call()
-                }
-            });
+            const networkId = await web3.eth.net.getId();
+            const tokensalecontract = await new web3.eth.Contract(
+                TokenSaleContractBuild.abi,
+                TokenSaleContractBuild.networks[networkId].address
+            );
+            const tokencontract = await new web3.eth.Contract(
+                TokenContractBuild.abi,
+                TokenContractBuild.networks[networkId].address
+            );
+            this.setState(
+                {
+                    AccountDetails: {
+                        address: selectedAccount,
+                        balance: await tokencontract.methods.balanceOf(selectedAccount).call()
+                    },
+                    TokenSaleContract: tokensalecontract,
+                    TokenContract: tokencontract,
+                    TokenDetails: {
+                        name: await tokencontract.methods.name().call(),
+                        symbol: await tokencontract.methods.symbol().call(),
+                        price: await tokensalecontract.methods.tokenPrice().call(),
+                        sold: await tokensalecontract.methods.tokensSold().call(),
+                        forSale: await tokencontract.methods.balanceOf(tokensalecontract._address).call()
+                    }
+                });
+        }
     }
-}
     render() {
-        const {name,symbol,price,sold,forSale} = this.state.TokenDetails;
+        const { name, symbol, price, sold, forSale } = this.state.TokenDetails;
         const priceInETH = 0.000000001 * price;
-        const {address,balance} = this.state.AccountDetails;
+        const { address, balance } = this.state.AccountDetails;
         return (
             <div className="App">
                 <div className="d-flex justify-content-center align-items-center flex-column p-4 m-2">
@@ -88,7 +88,7 @@ export class Main extends Component {
                                 <button className="btn btn-outline-secondary" type="button" id="button-addon2">Buy Tokens</button>
                             </div>
                             <div className="progress">
-                                <div className={`progress-bar w-${(sold/forSale)*100}`} role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div className={`progress-bar w-${(sold / forSale) * 100}`} role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div className="d-flex justify-content-center align-items-center flex-column">
                                 <p>{sold}/{forSale} tokens sold</p>
