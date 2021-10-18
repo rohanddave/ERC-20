@@ -16,6 +16,7 @@ export class Main extends Component {
             TokenDetails: {
                 name: '',
                 symbol: '',
+                decimals: 0,
                 price: 0,
                 sold: 0,
                 forSale: 0 //actually is remaining tokens 
@@ -76,6 +77,7 @@ export class Main extends Component {
                     TokenDetails: {
                         name: await tokencontract.methods.name().call(),
                         symbol: await tokencontract.methods.symbol().call(),
+                        decimals: await tokencontract.methods.decimals().call(),
                         price: await tokensalecontract.methods.tokenPrice().call(),
                         sold: await tokensalecontract.methods.tokensSold().call(),
                         forSale: await tokencontract.methods.balanceOf(tokensalecontract._address).call()
@@ -85,19 +87,19 @@ export class Main extends Component {
     }
 
     render() {
-        const { name, symbol, price, sold, forSale } = this.state.TokenDetails;
+        const { name, symbol, decimals, price, sold, forSale } = this.state.TokenDetails;
         const priceInETH = 0.000000001 * price;
         const { address, balance } = this.state.AccountDetails;
         const requiredTokens = this.state.requiredTokens;
         const prog = parseInt((parseInt(sold) / (parseInt(forSale) + parseInt(sold))) * 100);
-        console.log(prog);
+        console.log(decimals);
         return (
             <div className="App">
                 <div className="d-flex justify-content-center align-items-center flex-column p-4 m-2">
                     <div className="container d-flex justify-content-center align-items-center flex-column">
                         <h1 className="p-2">{name} Initial Coin Offering Sale</h1>
                         <div className="container border-bottom primary mb-3"></div>
-                        <p>Introducing <b>{name}<i> ({symbol})</i></b>! Token Price is <b>{priceInETH} eth</b>. You currently have <b>{balance} Token(s)</b></p>
+                        <p>Introducing <b>{name}<i> ({symbol})</i></b>! Token Price is <b>{priceInETH} eth</b>. You currently have <b>{balance / (10 ** decimals)} Token(s)</b></p>
                     </div>
                     <div className="container">
                         <form onSubmit={this.handleSubmit}>
