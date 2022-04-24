@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Web3 from 'web3';
-import TokenSaleContractBuild from 'contracts/TokenSale.json';
-import TokenContractBuild from 'contracts/Token.json';
+import TokenSaleContractBuild from './TokenSale.json';
+import TokenContractBuild from './Token.json';
 
 export class Main extends Component {
     constructor(props) {
@@ -28,7 +28,6 @@ export class Main extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log(this.state.requiredTokens);
         this.state.TokenSaleContract.methods.buyTokens(this.state.requiredTokens).send({ from: this.state.AccountDetails.address, value: this.state.requiredTokens * this.state.TokenDetails.price }).then(() => {
             window.location.reload();
         });
@@ -56,13 +55,12 @@ export class Main extends Component {
             }.bind(this));
 
             const web3 = new Web3(provider);
-
             const networkId = await web3.eth.net.getId();
-            const tokensalecontract = await new web3.eth.Contract(
+            const tokensalecontract = new web3.eth.Contract(
                 TokenSaleContractBuild.abi,
                 TokenSaleContractBuild.networks[networkId].address
             );
-            const tokencontract = await new web3.eth.Contract(
+            const tokencontract = new web3.eth.Contract(
                 TokenContractBuild.abi,
                 TokenContractBuild.networks[networkId].address
             );
@@ -92,14 +90,13 @@ export class Main extends Component {
         const { address, balance } = this.state.AccountDetails;
         const requiredTokens = this.state.requiredTokens;
         const prog = parseInt((parseInt(sold) / (parseInt(forSale) + parseInt(sold))) * 100);
-        console.log(decimals);
         return (
             <div className="App">
                 <div className="d-flex justify-content-center align-items-center flex-column p-4 m-2">
                     <div className="container d-flex justify-content-center align-items-center flex-column">
                         <h1 className="p-2">{name} Initial Coin Offering Sale</h1>
                         <div className="container border-bottom primary mb-3"></div>
-                        <p>Introducing <b>{name}<i> ({symbol})</i></b>! Token Price is <b>{priceInETH} eth</b>. You currently have <b>{balance / (10 ** decimals)} Token(s)</b></p>
+                        <p>Introducing <b>{name}<i> ({symbol})</i></b>! Token Price is <b>{priceInETH} eth</b>. You currently have <b>{balance} Token(s)</b></p>
                     </div>
                     <div className="container">
                         <form onSubmit={this.handleSubmit}>

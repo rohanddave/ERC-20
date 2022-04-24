@@ -35,13 +35,13 @@ module.exports = {
    */
 
   networks: {
-    development:{
+    development: {
       host: "127.0.0.1",
-      port: "8545", 
-      network_id:"*"
+      port: "8545",
+      network_id: "5777"
     },
     advanced: {
-      from: '0x1A122eCdfc79382cc7Fff781407Aea63CDfe1E23'
+      from: '0xA24B2b3acB6D9EA541186dB5A8234b4b3d4c6228'
     }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
@@ -112,13 +112,13 @@ module.exports = {
   // $ truffle migrate --reset --compile-all
   //
   // db: {
-    // enabled: false,
-    // host: "127.0.0.1",
-    // adapter: {
-    //   name: "sqlite",
-    //   settings: {
-    //     directory: ".db"
-    //   }
-    // }
+  // enabled: false,
+  // host: "127.0.0.1",
+  // adapter: {
+  //   name: "sqlite",
+  //   settings: {
+  //     directory: ".db"
+  //   }
+  // }
   // }
 };
